@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugar Visualization</title>
+    <link rel="icon" type="image" href="sugar_cube.png">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <h1> Added Suger & SSB & Death </h1>
+    <p>Tianchen Wang 2023 March</p>
+</head>
+<style>
+    .y-axis .domain {
+        stroke: none;
+    }
+    .x-axis .domain {
+        stroke: none;
+    }
+    .y-axis text {
+        fill: black;
+    }
+    .x-axis text {
+        fill: black;
+    }
+</style>
+<body>
+  <!---------FirstSection-------------- -->
+    <h2>Guess How Much Sugar Does It Contain?</h1>
+    <div class="radio-buttons">
+        <label class="radio-item">
+            <input type="radio" id="sugar" name="display" value="sugar">
+            <div class="radio-dot"></div>
+            Sugar Cubes (1 Teaspoons/4 grams)
+        </label>
+        <label class="radio-item">
+            <input type="radio" id="apple" name="display" value="apple">
+            <div class="radio-dot"></div>
+            Apples (3 Teaspoons/12 grams)
+        </label>
+    </div>
+    <br>
+    <div class="container" style=" text-align:center; width: 70%; margin: auto; display: flex; flex-wrap: wrap; gap: 16px;"></div>
+    <hr class="solid">
+    <!-- --------second-section------------- -->
+    <h2>Does Higher Sugar Content Mean More Calories? Yes!</h2>
+    <p>(Drink: 12-Ounce Serving)</p>
+    <h5> Data Source From: <a href="https://www.cdc.gov/healthyweight/healthy_eating/drinks.html">CDC</a></h5>
+    <svg id="second-section" width="800" height="600"></svg>
+    <div id="tooltip" style="opacity: 0; position: absolute;"></div>
+    <hr class="solid">
+    <!-- --------third-section-------------- -->
+    <h2>Sugar-Sweetened Drinks Can Harm Your Health!</h2>
+    <div id="third-section" style=" text-align:center; width: 50%;  margin: auto;">
+        <p style="text-align: left;"> 
+            After adjusting for major diet and lifestyle factors, the researchers found that the 
+            more SSBs a person drank, the more his or her risk of early death from any cause increased. 
+            Compared with drinking SSBs less than once per month, drinking one to four sugary drinks 
+            per month was linked with a 1% increased risk; two to six per week with a 6% increase; 
+            one to two per day with a 14% increase; and two or more per day with a 21% increase. 
+            The increased early death risk linked with SSB consumption was more pronounced among women 
+            than among men.Data Source From: <a href="https://www.hsph.harvard.edu/news/press-releases/sugary-beverages-linked-with-higher-risk-of-death/">Harvard HSPH</a></p>
+        <button id="showLineChart" class="showLineChart" style="margin-top: 10px; margin-bottom: 20px; background-color: #f2f2f2; border: none; color: #444; font-size: 16px; padding: 8px 16px; border-radius: 5px; cursor: pointer; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);">Show Line Chart</button>
+        <div id="linechart" ></div>
+        <div id="tooltip2" class="hidden" style="max-width: 150px;"></div>
+    </div>
+    <!-- <div id="tooltip" style="position: absolute; opacity: 0; pointer-events: none;"></div> -->
+    <hr class="solid">
+    <!-- ---------seven&eight-section------------ -->
+    <div id="container2" style=" text-align:center;">
+    <h2>Global Sugar Production,Consumption,Imports,Exports versus Prevalence of Diabetes.</h2>
+    <div id="seven" style="display:inline-block;">
+    <h3>Sugar Consumption/Production/Imports/Exports(1000 MT)</p></h3>
+    <p>Try Hover Function!</p>
+    <div id="sixth-section"></div>
+        <div id="tooltip4" style="position: absolute; opacity: 0;"></div>
+            <input type="radio" id="pro" name="dataset" value="Sugar_World_Pro.csv" checked>
+            <label for="pro">Production</label>
+            <input type="radio" id="con" name="dataset" value="Sugar_World_Con.csv">
+            <label for="con">Consumption</label>
+            <input type="radio" id="con_captia" name="dataset" value="Sugar_World_Con_per_captia.csv">
+            <label for="con">Consumption Per Captia</label>
+            <input type="radio" id="Expo" name="dataset" value="Sugar_World_Expo.csv">
+            <label for="con">Export</label>
+            <input type="radio" id="Imp" name="dataset" value="Sugar_World_Imp.csv">
+            <label for="con">Import</label>
+    </div>
+    <div id = 'eight' style="display:inline-block;">
+        <h3>Diabetes prevalence (% of population ages 20 to 79)</h3>
+        <p>Try Zoom and Hover Function!</p>
+        <div id="diabetes-map"></div>
+        <label><input type="radio" name="year" value="2011" checked> 2011</label>
+        <label><input type="radio" name="year" value="2021"> 2021</label>
+    </div>
+    </div>
+    <hr class="solid">
+    <!-- ---------FifthSection------------ -->
+    <h2>How Much Sugar Should You Consume Per Day?"</h2>
+    <p style="text-align: center;">Dataset Source: <a href="https://www.health.harvard.edu/heart-health/the-sweet-danger-of-sugar">Harvard Health</a> ; <a href="https://www.cdc.gov/nutrition/data-statistics/added-sugars.html#:~:text=Americans%20are%20eating%20and%20drinking,2%20diabetes%2C%20and%20heart%20disease.">CDC</a>   
+    <div style=" text-align:center;">
+      <div style="display: inline-block; width: 500px;">
+        <p style="text-align: left;">Americans are eating and drinking too many added sugars, which can contribute to health problems such as weight gain and obesity, type 2 diabetes, and heart disease. </p>
+        <p style="text-align: left;">In a study published in 2014 in JAMA Internal Medicine, Dr. Hu and his colleagues found an association between a high-sugar diet and a greater risk of dying from heart disease. Over the course of the 15-year study, people who got 17% to 21% of their calories from added sugar had a 38% higher risk of dying from cardiovascular disease compared with those who consumed 8% of their calories as added sugar.</p>
+        <p style="text-align: left;">The American Heart Association suggests that women consume no more than 100 calories (about 6 teaspoons or 24 grams) and men no more than 150 calories (about 9 teaspoons or 36 grams) of added sugar per day. That is close to the amount in a 12-ounce can of soda.</p>
+      </div>
+      <div id="fifth-section" style="display: inline-block;"></div>
+    </div>
+    <hr class="solid">
+    <!-- --------four-section------------- -->
+    <h2>Identifying Added Sugar: Can You Guess Which One?</h2>
+    <div id="added-sugar-cards-container"></div>
+    <button id="reset-button">Reset</button>
+    <hr class="solid">
+    <!-- ---------nine-section------------ -->
+    <h2>Sugar and other Nutritional Element</h2>
+      (Every 100 grams)
+    <div style="text-align:center;">
+      <div id="eight-section" style ="display:inline-block;;"></div>
+      <div id="eight-section-legend" style ="display:inline-block;;width:300px;height: 800px;overflow-y:scroll"></div>
+    </div>
+    <div id="matrix-tooltip" style="position: absolute; display: none; background-color: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 5px; pointer-events: none;"></div>
+    <div id="dropdown-container">
+      <select id="dropdown1"></select>
+      <select id="dropdown2"></select>
+      <select id="dropdown3"></select>
+    </div>
+    <div id="select-section"></div>  <!-- style="visibility: hidden;" -->
+    <br>
+    <br>
+    <br>
+    
+    <script>
+    // wrap function ---------------------- 
+    // source: https://stackoverflow.com/questions/24784302/wrapping-text-in-d3
+    function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
+
+    // SUGAR DROP FUNCTION ------------------------------**
+    const FirstSection = async function() {
+        const data = await d3.csv('sugar_contain_pop_list_.csv');
+        const container = d3.select(".container");
+
+        data.forEach(d => {
+            const chartArea = container.append("div")
+                                        .style("display", "flex")
+                                        .style("flex-direction", "column")
+                                        .style("align-items", "center")
+                                        .style("padding", "4px")
+                                        .style("width", "180px")
+                                        .style("margin-bottom", "10px");
+
+            chartArea.append("img")
+                .attr("src", d.image_link)
+                .attr("width", 100)
+                .attr("height", 100)
+                .style("box-sizing", "border-box");
+            chartArea.append("text")
+                .text(d.popular_drinks);
+            chartArea.append("text")
+                .text(d.size);
+
+            const appleOrSugarImage = chartArea.append("div")
+                .attr("class", "appleOrSugarImage")
+                .datum(d);
+        });
+        let showApplesOrSugar = null;
+        d3.selectAll(".radio-item")
+          .selectAll("input")
+          .on("change", function () {
+            if (this.value === "apple") {
+              showApplesOrSugar = true;
+            } 
+            else {
+              showApplesOrSugar = false;
+            }
+            d3.selectAll(".appleOrSugarImage")
+              .each(function () { //if use "() =>"" here, this does not work, so have to use
+                const appleOrSugarImage = d3.select(this);
+                const d = appleOrSugarImage.datum(); //data of appleOrSugarImage
+                appleOrSugarImage.selectAll("img").remove();
+                const count = showApplesOrSugar ? d.apple_number : d.cube_suger_number;
+                for (let i = 0; i < count; i++) {
+                  appleOrSugarImage.append("img")
+                                    .attr("src", showApplesOrSugar ? "apple1.png" : "sugar_cube.png")
+                                    .attr("width", 20)
+                                    .attr("class", showApplesOrSugar ? "apple" : "sugar-cube")
+                                    .style("opacity", 0)
+                                    .style("position", "relative")
+                                    .style("top", "-10px")
+                                    .style("margin", "1px")
+                                    .transition()
+                                    .duration(500)
+                                    .delay(i * 100)
+                                    .style("opacity", 1)
+                                    .style("top", "0px");
+          }
+            });
+          });
+      }
+    FirstSection();
+
+    // CAL VS SUGAR FUNCTION ------------------------------**
+    const SecondSection = async function () {
+        const data = await d3.csv('drink_sugar_vs_cal.csv');
+        data.forEach((d) => {
+                d.Teaspoons_of_Sugar = Number(d['Teaspoons_of_Sugar']);
+                d.Total_Drink_Calories = Number(d['Total_Drink_Calories']);
+                d.drink_name = String(d['drink_name']);
+        });
+        const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        //console.log(data)
+        const Teaspoons_of_Sugar_Extent = d3.extent(data, d => d.Teaspoons_of_Sugar);
+        const Total_Drink_Calories_Extent = d3.extent(data, d => d.Total_Drink_Calories);
+        const xScale = d3.scaleLinear()
+                        .domain(Teaspoons_of_Sugar_Extent)
+                        .range([70, width - margin.right]);
+        const yScale = d3.scaleLinear()
+                        .domain(Total_Drink_Calories_Extent)
+                        .range([height - margin.bottom, 20]);
+
+        const svg = d3.select('#second-section')
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom)
+        
+        const chartArea = svg.append('g')
+                            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        chartArea.append('g')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(d3.axisBottom(xScale))
+            .style('font-size', '12px')
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 40)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .style('font-family', 'NYTFranklin, Georgia, serif')
+            .text('Teaspoons of Sugar')
+            .style('font-size', '15px');
+
+        chartArea.append('g')
+            .call(d3.axisLeft(yScale))
+            .style('font-size', '12px')
+            .attr('transform', `translate(${margin.left-40}, 0)`) 
+            .append('text')
+            .style('font-family', 'NYTFranklin, Georgia, serif')
+            .attr('transform', 'rotate(-90)')
+            .attr('x', -height / 2)
+            .attr('y', -40)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('Total Drink Calories')
+            .style('font-size', '15px');
+        
+        const tooltip = d3.select('#tooltip')
+                          .style("background-color", "white")
+                          .style("padding", "5px")
+                          .style("border", "1px solid black")
+                          .style("border-radius", "5px");;
+        
+        const imageWidth = 50;
+        const imageHeight = 50;
+        chartArea.selectAll('image')
+            .data(data)
+            .enter()
+            .append('image')
+            .attr('xlink:href', d => d.image_link)
+            .attr('width', imageWidth)
+            .attr('height', imageHeight)
+            .attr('x', d => xScale(d.Teaspoons_of_Sugar) - imageWidth / 2) 
+            .attr('y', d => yScale(d.Total_Drink_Calories) - imageHeight / 2)
+            .on('mouseover', (event, d) => {
+                d3.select(event.currentTarget).style("cursor", "pointer")
+                tooltip.style('opacity', 1)
+                        .style('left', `${event.pageX}px`)
+                        .style('top', `${event.pageY}px`)
+                        .html(`
+                            <p>Drink: ${d.drink_name}</p>
+                            <p>Teaspoons of Sugar: ${d.Teaspoons_of_Sugar}</p>
+                            <p>Total Drink Calories: ${d.Total_Drink_Calories}</p>
+                        `);
+                        chartArea.selectAll('image')
+                    .filter(imageData => imageData !== d)
+                    .style('opacity', 0.3);
+            })
+            .on('mouseout', () => {
+                d3.select(event.currentTarget).style("cursor", "default")
+                tooltip.style('opacity', 0);
+                chartArea.selectAll('image')
+                    .style('opacity', 1);
+            });
+            
+            chartArea.selectAll('.drink-name')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'drink-name')
+                .attr('x', d => xScale(d.Teaspoons_of_Sugar))
+                .attr('y', d => yScale(d.Total_Drink_Calories) + imageHeight / 2 + 10)
+                .style('text-anchor', 'middle')
+                .style('font-family', 'NYTFranklin, Georgia, serif')
+                .text(d => d.drink_name)
+                .style('font-size', '9px')
+                .call(wrap, 50);;
+    };
+
+    SecondSection();
+
+    // SUGAR WILL KILL YOU FUNCTION ------------------------------**
+    const ThirdSection = async function () {
+      const data = await d3.csv('health_sugar_list.csv');
+      const margin = { top: 30, right: 20, bottom: 40, left: 40 };
+      const width = 700 - margin.left - margin.right;
+      const height = 550 - margin.top - margin.bottom;
+      //console.log(data)
+      const svg2 = d3.select('#linechart')
+          .append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          
+      const chartArea2 = svg2.append('g')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+      data.forEach((d) => {
+          d.percent = Number(d['percent']);
+          d.cup = Number(d['cup']);
+      });
+
+      const titleExtent = data.map((d) => d.title)
+      const percentExtent = d3.extent(data, d => d.percent);
+      const xScale = d3.scaleBand()
+                        .domain(titleExtent)
+                        .range([0, width])
+                        .padding(0.1);
+      const yScale = d3.scaleLinear()
+                        .domain(percentExtent)
+                        .range([height, 0]);
+      const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
+
+      chartArea2.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + height + ')')
+                .call(xAxis)
+                .style('font-size', '12px');
+      chartArea2.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis)
+                .style('font-size', '12px');
+
+      chartArea2.append("text")
+          .attr("class", "x label")
+          .attr("text-anchor", "end")
+          .attr("x", width/1.5)
+          .attr("y", height + margin.bottom-5)
+          .text("Drinking SSBs Times per month");
+
+      chartArea2.append("text")
+          .attr("class", "y label")
+          .attr("text-anchor", "end")
+          .attr("y", -margin.left + 5)
+          .attr("x", -height / 5.5)
+          .attr("dy", ".75em")
+          .attr("transform", "rotate(-90)")
+          .text("Percent Increase in the Risk of Premature Death");
+
+      const colorScale = d3.interpolateRgb("yellow", "red");
+
+      const lineChartGroup = chartArea2.append('g');
+      const gradient = chartArea2
+                          .append("defs")
+                          .append("linearGradient")
+                          .attr("id", "gradient")
+                          .attr("x1", "0%")
+                          .attr("y1", "0%")
+                          .attr("x2", "100%")
+                          .attr("y2", "0%");
+      gradient.append("stop")
+              .attr("offset", "0%")
+              .attr("stop-color", "yellow")
+              .attr("stop-opacity", 1);
+
+      gradient.append("stop")
+              .attr("offset", "100%")
+              .attr("stop-color", "red")
+              .attr("stop-opacity", 1);
+      
+      const line = d3.line()
+                      .x((d) => xScale(d.title) + xScale.bandwidth() / 2)
+                      .y((d) => yScale(d.percent));
+                      
+      const path = lineChartGroup.append("path")
+                                  .datum(data)
+                                  .attr("class", "line")
+                                  .attr("d", line)
+                                  .attr("fill", "none")
+                                  .attr("stroke", "url(#gradient)")
+                                  .attr("stroke-width", 2)
+                                  .style("opacity", 0);
+
+      lineChartGroup.selectAll('.lineChartdot')
+                    .data(data)
+                    .enter()
+                    .append('circle')
+                    .attr('class', 'lineChartdot')
+                    .attr('cx', (d) => xScale(d.title) + xScale.bandwidth() / 2)
+                    .attr('cy', (d) => yScale(d.percent))
+                    .attr('r', 5)
+                    .attr('fill', (d) => colorScale(d.percent / d3.max(data, (d) => d.percent)))
+                    .style('opacity', 0);
+
+      lineChartGroup.selectAll('.percent-label')
+                    .data(data)
+                    .enter()
+                    .append('text')
+                    .attr('class', 'percent-label')
+                    .attr('x', (d) => xScale(d.title) + xScale.bandwidth() / 2)
+                    .attr('y', (d) => yScale(d.percent) - 11) 
+                    .attr('text-anchor', 'middle')
+                    .text((d) => d.percent + "%")
+                    .style('opacity', 0);
+
+      d3.select('#showLineChart').on('click', function () {
+          const totalLength = path.node().getTotalLength(); 
+          //https://stackoverflow.com/questions/52545287/d3-draw-line-using-stroke-dasharray-and-stroke-dashoffset
+          path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+              .attr('stroke-dashoffset', totalLength)
+              .transition()
+              .duration(2000)
+              .attr('stroke-dashoffset', 0)
+              .style('opacity', 1);
+
+          lineChartGroup.selectAll('.lineChartdot')
+                        .transition()
+                        .delay((d, i) => i * 200)//animation
+                        .duration(2000)
+                        .style('opacity', 1);
+          lineChartGroup.selectAll('.lineChartdot')
+                          .on('mouseover', function (event, d) {
+                            d3.select(event.currentTarget).style("cursor", "pointer")
+                            tooltip2
+                              .style('left', event.pageX + 10 + 'px')
+                              .style('top', event.pageY - 25 + 'px')
+                              .style('opacity', 1)
+                              .html(`<strong>${d.title2}</strong>`);
+                          })
+                          .on('mouseout', function () {
+                            tooltip2.style('opacity', 0);
+                          }); 
+
+          lineChartGroup.selectAll('.percent-label')
+                        .transition()
+                        .delay((d, i) => i * 200) // animation
+                        .duration(2000)
+                        .style('opacity', 1);
+
+            chartArea2.selectAll('image')
+                      .style('opacity', 0.5);
+      });
+
+      const tooltip2 = d3.select('#tooltip2')
+                        .style("background-color", "white")
+                        .style("padding", "5px")
+                        .style("border", "1px solid black")
+                        .style("border-radius", "5px")
+                        .style('opacity', 0);
+
+      data.forEach((d) => {
+          const maxImagesPerRow = 3; 
+          const numRows = Math.ceil(d.cup / maxImagesPerRow);
+
+          for (let row = 0; row < numRows; row++) {
+              for (let col = 0; col < maxImagesPerRow && d.cup > 0; col++) {
+                  const xPos = xScale(d.title) + col * 25;//how many * image width = position
+                  const yPos = height - (row + 1) * 25;//height
+
+                  chartArea2.append('image')
+                            .attr('xlink:href', 'drink.png')
+                            .attr('width', 25)
+                            .attr('height', 25)
+                            .attr('x', xPos + 20) 
+                            .attr('y', yPos)
+                            .on('mouseover', function (event) {
+                              d3.select(event.currentTarget).style("cursor", "pointer");
+                              tooltip2.style('left', event.pageX + 10 + 'px')
+                                  .style('top', event.pageY - 25 + 'px')
+                                  .style('opacity', 1)
+                                  .html(`<strong>${d.title2}</strong>`);
+                            })
+                            .on('mouseout', function () {
+                              tooltip2.style('opacity', 0);
+                            });
+                      d.cup--;
+                  }
+                }
+              });
+      lineChartGroup.raise();
+    };
+    ThirdSection();
+
+    // ADDED SUGAR QUIZ ------------------------------
+    const ForthSection = async function () {
+      const data = await d3.csv('added_sugar.csv');
+      const container = document.getElementById('added-sugar-cards-container');
+      const resetButton = document.getElementById('reset-button');
+
+      data.forEach(({ sugarName, addedSugar, image_link }) => {
+        const card = document.createElement('div');
+        card.className = 'card2';
+
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner';
+
+        const cardFront = document.createElement('div');
+        cardFront.className = 'card-face card-front';
+        cardFront.style.backgroundImage = `url(${image_link})`;
+
+        const textElement = document.createElement('div');
+        textElement.innerText = sugarName;
+        textElement.style.color = 'black';
+        cardFront.appendChild(textElement);
+
+        const beforeElement = document.createElement('div');
+        beforeElement.className = 'before-element';
+        textElement.appendChild(beforeElement);
+        
+        const cardBack = document.createElement('div');
+        cardBack.className = addedSugar.toLowerCase() === 'yes' ? 'card-face card-back' : 'card-face card-back-no';
+        cardBack.innerText = addedSugar.toLowerCase() === 'yes' ? 'Added Sugar' : 'Not Added Sugar';
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
+        container.appendChild(card);
+
+        card.addEventListener('click', () => {
+            card.classList.add('card-flipped');
+          });
+      });
+
+      //https://stackoverflow.com/questions/66449563/flipping-all-cards-but-want-to-flip-one-by-one
+      resetButton.addEventListener('click', () => {
+        const flippedCards = document.querySelectorAll('.card-flipped');
+        flippedCards.forEach(card => card.classList.remove('card-flipped'));
+      });
+    };
+    ForthSection();
+
+    // SPOON ------------------------------**
+
+    const FifthSection = async function () {
+      const margin = { top: 20, right: 20, bottom: 0, left: 20 };
+      const width = 500 - margin.left - margin.right;
+      const height = 300 - margin.top - margin.bottom;
+
+      const svg5 = d3.select("#fifth-section")
+                      .append("svg")
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom)
+      const chartArea5 = svg5.append("g")
+                              .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      chartArea5.append("line")
+                .attr("x1", 0)
+                .attr("y1", height / 1.2)
+                .attr("x2", width)
+                .attr("y2", height / 1.2)
+                .attr("stroke", "black")
+                .attr("stroke-width", 2);
+
+      chartArea5.append("text")
+                .attr("x", width / 4)
+                .attr("y", height / 1.2 + 20)
+                .attr("text-anchor", "middle")
+                .text("Women");
+
+      chartArea5.append("text")
+                .attr("x", width / 4)
+                .attr("y", height / 1.2 + 35)
+                .attr("text-anchor", "middle")
+                .text("6 teaspoon/24 grams");
+
+      chartArea5.append("text")
+                .attr("x", (3 * width) / 4)
+                .attr("y", height / 1.2 + 20)
+                .attr("text-anchor", "middle")
+                .text("Man");
+
+      chartArea5.append("text")
+                .attr("x", (3 * width) / 4)
+                .attr("y", height / 1.2 + 35)
+                .attr("text-anchor", "middle")
+                .text("9 teaspoon/36 grams");
+
+      const RecommandationAmount = [
+        { type: "Women", teaspoonOfSugar: 6 },
+        { type: "Man", teaspoonOfSugar: 9 },
+      ];
+
+      const animateSpoons = () => {
+        RecommandationAmount.forEach((d) => {
+          let x;
+          if (d.type === "Women") {
+            x = width / 4;
+          } 
+          else {
+            x = (3 * width) / 4;
+          } //width / 4 is women and (3 * width) / 4 is males
+          for (let i = 0; i < d.teaspoonOfSugar; i++) {
+            const y = height / 2 - i * (50 / 2) + 40;
+            chartArea5.append("image")
+                      .attr("xlink:href", "spoon.png")
+                      .attr("x", x - 50 / 2)
+                      .attr("y", height)
+                      .attr("width", 50)
+                      .attr("height", 50)
+                      .transition()
+                      .duration(1000)
+                      .delay(i * 200)
+                      .attr("y", y);
+          }
+        });
+      };
+      //https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
+      //https://stackoverflow.com/questions/72714639/intersection-observer-if-statement-wont-select-the-specific-entry
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              animateSpoons();
+              observer.disconnect(); //IntersectionObserver stop after the first time
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      const targetElement = document.getElementById("fifth-section");
+      // see if user scroll to fifth
+      observer.observe(targetElement);
+    };
+
+    FifthSection();
+
+    // MAP  ------------------------------*
+    const SeventhSection = async function () {
+        const worldMap = await d3.json("countries-110m.json");
+        const data = await d3.csv("diabetes-prevalence-1.csv");
+        data.forEach((d) => {
+                d.Value = Number(d['Value']);
+        });
+        
+        const width = 700;
+        const height = 600;
+
+        //https://github.com/d3/d3-geo
+        const projection = d3.geoNaturalEarth1()
+            .scale(width / (1.4 * Math.PI))
+            .translate([width / 2, height / 2]);
+/*         const projection = d3.geoMercator()
+                            .center([0, 5])
+                            .scale(100)
+                            .rotate([-180, 0])
+                            .translate([width / 2, height / 2]); */
+
+        const path = d3.geoPath()
+                        .projection(projection);
+                        
+        const svg = d3.select("#diabetes-map")
+                        .append("svg")
+                        .attr('class', 'diabetesMap')
+                        .attr("width", width)
+                        .attr("height", height);
+        
+        const countries = topojson.feature(worldMap, worldMap.objects.countries);
+
+        const diabetesDataExtent = d3.extent(data, d => d.Value);
+
+        const colorScale = d3.scaleSequential()
+                              .interpolator(d3.interpolateReds)
+                              .domain(diabetesDataExtent);
+        //http://using-d3js.com/04_08_legends.html
+        const legendBar = d3.legendColor()
+                            .shapeWidth(70)
+                            .cells(6)
+                            .labelFormat(d3.format(".0f"))
+                            .orient("horizontal")
+                            .scale(colorScale);
+        
+        d3.select(".diabetesMap")
+          .append("g")
+          .attr("transform", "translate(150,0)")
+          .call(legendBar);
+
+        const yearData = (year) => data.filter(d => d.Year == year);
+
+        const diabetesMap = new Map(yearData("2011").map(d => [d.Entity, d.Value]));
+
+        const tooltip_diabetesMap = d3.select("body")
+                          .append("div")
+                          .attr("class", "tooltip")
+                          .style("position", "absolute")
+                          .style("z-index", "10")
+                          .style("visibility", "hidden")
+                          .style("background-color", "white")
+                          .style("padding", "5px")
+                          .style("border", "1px solid black")
+                          .style("border-radius", "5px");
+        
+        // Add a clipPath: everything out of this area won't be drawn.
+        var clip = svg.append("defs")
+                      .append("SVG:clipPath")
+                      .attr("id", "clip")
+                      .append("SVG:rect")
+                      .attr("width", width )
+                      .attr("height", height)
+                      .attr("x", 0)
+                      .attr("y", 50);                    
+        
+        const normalOpacity = 1;
+        const reducedOpacity = 0.5;
+        var scatter = svg.append('g')
+                          .attr("clip-path", "url(#clip)")
+        const mapContainer = scatter.append("g");
+        function handleZoom(event) {
+          mapContainer.attr("transform", event.transform);
+        }
+        const zoomBehavior = d3.zoom()
+                                .on("zoom", handleZoom);
+        svg.call(zoomBehavior);
+
+        mapContainer.selectAll("path")
+            .data(countries.features)
+            .enter()
+            .append("path")
+            .attr("fill", d => {
+                const name = d.properties.name;
+                const diabetes = diabetesMap.get(name);
+                return diabetes ? colorScale(diabetes) : "#ccc";
+            })
+            .attr("d", path)
+            .style("opacity", normalOpacity)
+            .on("mouseover", function (event, d) {
+                d3.select(event.currentTarget).style("cursor", "pointer");
+                const name = d.properties.name;
+                const diabetes = diabetesMap.get(name);
+
+                tooltip_diabetesMap.html(`Country: ${name}<br>Diabetes prevalence: ${diabetes ? diabetes.toFixed(2) + '%' : 'N/A'}`)
+                    .style("visibility", "visible");
+
+                mapContainer.selectAll("path")
+                    .filter(value => value !== d)
+                    .style("opacity", reducedOpacity);
+
+                const heatmapCells = d3.select("#sixth-section")
+                                        .selectAll(".cell")
+                                        .filter((cell) => cell.Country === name);
+                heatmapCells.style("stroke", "black")
+                            .style("stroke-width", "2px");
+
+            })
+            .on("mousemove", function (event) {
+                tooltip_diabetesMap.style("top", (event.pageY - 10) + "px")
+                                    .style("left", (event.pageX + 10) + "px");
+            })
+            .on("mouseout", function (event, d) {
+                mapContainer.selectAll("path")
+                            .style('opacity', normalOpacity);
+                d3.select(event.currentTarget).style("cursor", "default");
+                tooltip_diabetesMap.style("visibility", "hidden");
+
+                // Reset all heatmap cells stroke
+                const name = d.properties.name;
+                const heatmapCells = d3.select("#sixth-section")
+                                        .selectAll(".cell");
+                heatmapCells.style("stroke", "lightgrey")
+                            .style("stroke-width", "0.5px");
+
+            });
+
+        d3.selectAll("input[name=year]")
+            .on("change", function () {
+                /* if (this.name === year) {
+                            */   
+                const year = this.value;
+                const newData = yearData(year);
+                let newDiabetesMap = new Map(newData.map(d => [d.Entity, d.Value]));
+
+                mapContainer.selectAll("path")
+                    .attr("fill", d => {
+                        const name = d.properties.name;
+                        const diabetes = newDiabetesMap.get(name);
+                        return diabetes ? colorScale(diabetes) : "#ccc";
+                    })            
+                    .on("mouseover", function (event, d) {
+                        d3.select(event.currentTarget)
+                          .style("cursor", "pointer");
+                        const name = d.properties.name;
+                        const diabetes = newDiabetesMap.get(name);
+
+                        tooltip_diabetesMap.html(`Country: ${name}<br>Diabetes prevalence: ${diabetes ? diabetes.toFixed(2) + '%' : 'N/A'}`)
+                            .style("visibility", "visible");
+                        mapContainer.selectAll("path")
+                            .filter(value => value !== d)
+                            .style("opacity", reducedOpacity);
+                        const heatmapCells = d3.select("#sixth-section").selectAll(".cell").filter((cell) => cell.Country === name);
+                        heatmapCells.style("stroke", "black")
+                                    .style("stroke-width", "2px");
+                      })
+                      .on("mousemove", function (event) {
+                          tooltip_diabetesMap.style("top", (event.pageY - 10) + "px")
+                                            .style("left", (event.pageX + 10) + "px");
+                      })
+                      .on("mouseout", function (event, d) {
+                          mapContainer.selectAll("path")
+                                      .style('opacity', normalOpacity);
+
+                          d3.select(event.currentTarget)
+                            .style("cursor", "default");
+                          tooltip_diabetesMap.style("visibility", "hidden");
+            
+                          // Reset heatmap cells stroke
+                          const name = d.properties.name;
+                          const heatmapCells = d3.select("#sixth-section")
+                                                  .selectAll(".cell");
+                          heatmapCells.style("stroke", "lightgrey")
+                                      .style("stroke-width", "0.5px");})
+                              
+                      });
+        //why need this function: when hover on heatmap cell, I want the tooltip shows on map to show the diabetes rate
+        //so I need a function to find the countries's position, I want the tooltip to show on the center of the country in map
+        // I use the centroid function to find the countries's center 
+        function getCountryCentroid(countryName) {
+            const countryFeature = countries.features.find((d) => d.properties.name === countryName);
+            if (countryFeature) {
+              //https://observablehq.com/@proclamo/d3-centroid-example
+              const centroid = path.centroid(countryFeature);//find the center of the country
+              //https://stackoverflow.com/questions/21990857/d3-js-how-to-get-the-computed-width-and-height-for-an-arbitrary-element
+              //.getBoundingClientRect() returns the size of an element and its position relative to the viewport:
+              //We can easily get following left, right top, bottom height, width
+              const svgRect = svg.node().getBoundingClientRect();
+              console.log(svgRect.left + "," + svgRect.top + "," + centroid[0])
+
+              // we have centroid[x,y] for a given country which is accurate when the map is at default
+              // panzoom has a transform which is the identity when map is at default
+              // if panzoom is moved or zoomed, the transform changes
+              // this does not adjust centroid[x,y] to make use of the transform which changed\
+              //  call your panzoom and get the transform out of it
+              //  then apply the transform to centroid[x,y] so that x and y change to be correct for the current zoom level
+
+
+              return {
+                //https://stackoverflow.com/questions/9627005/svg-getting-the-position-of-an-element-relative-to-the-page
+                  x: centroid[0] + svgRect.left + window.pageXOffset,
+                  y: centroid[1] + svgRect.top + window.pageYOffset,
+              };
+            }
+            return null;
+        }
+        // window function is global function, define a global function in a function need .window
+        // I need a function to be called in heatmap, when user hover on the heatmap
+        // this function will be triggered so they can see the tooltip on the map
+        window.highlightMapCountry = function (countryName, highlight) {
+            const target = d3.select("#diabetes-map")
+                              .data(countries.features)
+                              .selectAll("path")
+                              .filter((d) => d.properties.name === countryName);
+
+            target.style("stroke", highlight ? "black" : "none")
+                  .style("stroke-width", highlight ? "2px" : "0");
+
+            if (highlight) {
+                /* const year = this.value;
+                const newData = yearData(year);
+                const newDiabetesMap = new Map(newData.map(d => [d.Entity, d.Value])); */
+                const year = document.querySelector('input[name="year"]:checked').value;
+                const newData = yearData(year);
+                const newDiabetesMap = new Map(newData.map(d => [d.Entity, d.Value]));
+                //console.log(year)
+                //console.log(newDiabetesMap)
+                //console.log(diabetesMap)
+                const name = countryName;
+                const diabetes = newDiabetesMap.get(name);
+                const centroid = getCountryCentroid(name); //get the center of the country selected
+                //console.log(centroid)
+
+                if (centroid) {
+                    //console.log("heiehie")
+                    tooltip_diabetesMap.html(`Country: ${name}<br>Diabetes: ${diabetes ? diabetes.toFixed(2) + '%' : 'N/A'}`)
+                                        .style("visibility", "visible")
+                                        .style("left", centroid.x + 5 +"px")
+                                        .style("top", centroid.y + 5 +"px");
+                }
+            } else {
+                tooltip_diabetesMap.style("visibility", "hidden");
+            }
+        };
+    }
+
+    SeventhSection();
+
+    // CIRCLE HEAT MAP  ------------------------------
+    const SixthSection = async function (datasetFilename) {
+        d3.select("#sixth-section svg").remove();
+        const data = await d3.csv(datasetFilename);
+        data.forEach((d) => {
+                d.Value = Number(d['Value']);
+        });
+
+        const margin = { top: 38, right: 20, bottom: 10, left: 20 };
+        const width = 700 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        const radius = Math.min(width, height) / 2 * 0.6; // resize
+        const innerRadius = 180 * 0.45; 
+
+        const svg = d3.select("#sixth-section")
+                      .append("svg")
+                      .attr('class', 'heatmapsvg')
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom)
+                      .append("g")
+                      .attr("transform", `translate(${width / 2 + margin.left},${height / 2 + margin.top})`);
+
+        const countries = Array.from(new Set(data.map((d) => d.Country)));
+        const years = Array.from(new Set(data.map((d) => d.Year)));
+
+        const countryScale = d3.scaleBand()
+                                .domain(countries)
+                                .range([0, 2 * Math.PI*0.91])
+                                .padding(0.01);
+
+        const yearScale = d3.scaleBand()
+                            .domain(years)
+                            .range([innerRadius, radius])
+                            .padding(0.01);
+
+        const colorScale = d3.scaleSequential()
+                            .domain([
+                              d3.min(data, (d) => d.Value),
+                              d3.quantile(data.map((d) => d.Value), 0.95),
+                            ])
+                            .interpolator(d3.interpolateOrRd);
+
+        //http://using-d3js.com/04_08_legends.html
+        const legendBar = d3.legendColor()
+                            .shapeWidth(70)
+                            .labelFormat(d3.format(".0f"))
+                            .cells(6)
+                            .orient("horizontal")
+                            .scale(colorScale);
+                          
+        d3.select(".heatmapsvg")
+          .append("g")
+          .attr("transform", "translate(150,0)")
+          .call(legendBar);
+
+        const arc = d3.arc()
+                      .innerRadius((d) => yearScale(d.Year))
+                      .outerRadius((d) => yearScale(d.Year) + yearScale.bandwidth())
+                      .startAngle((d) => countryScale(d.Country))
+                      .endAngle((d) => countryScale(d.Country) + countryScale.bandwidth());
+
+        svg.selectAll(".cell")
+            .data(data)
+            .join("path")
+            .attr("class", (d) => "cell " + d.Country.replace(/\s+/g, '-'))
+            .attr("d", arc)
+            .style("stroke", "lightgrey")
+            .style("stroke-width", "0.5px")
+            .attr("fill", (d) => colorScale(d.Value))
+            .style("opacity", 0) // transparent
+            .transition()
+            .duration(200)
+            .delay((d, i) => Math.random() * data.length * 10) // animation
+            .style("opacity", 1);
+
+        const tooltip = d3.select("#tooltip4")
+                          .style("background-color", "white")
+                          .style("padding", "5px")
+                          .style("border", "1px solid black")
+                          .style("border-radius", "5px");
+
+        svg.selectAll(".cell")
+            .on("mouseover", (event, d) => {
+                window.highlightMapCountry(d.Country, true, event.pageX, event.pageY);
+                svg.selectAll(".cell")
+                    .filter(Value => Value !== d)
+                    .style('opacity', 0.3);
+                d3.select(event.currentTarget).style("cursor", "pointer")
+                                              .style('stroke', 'black')
+                                              .style('stroke-width', '2px')
+                                              .style('opacity', 1);
+                tooltip.style("opacity", 1)
+                      .text(`Country: ${d.Country}\nYear: ${d.Year}\nValue: ${d.Value}`)
+                      .style("left", event.pageX + 10 + "px")
+                      .style("top", event.pageY - 10 + "px");
+            })
+            .on("mousemove", (event) => {
+                tooltip.style("left", event.pageX + 10 + "px")
+                        .style("top", event.pageY - 10 + "px");
+            })
+            .on("mouseout", (event, d) => {
+                window.highlightMapCountry(d.Country, false);
+                svg.selectAll(".cell").style('opacity', 1);
+                d3.select(event.currentTarget)
+                  .style("cursor", "default")
+                  .style('stroke', 'lightgrey')
+                  .style('stroke-width', '0.5px')
+                tooltip.style("opacity", 0);
+            });
+          
+        //year
+        years.forEach((year) => {
+          svg.append("text")
+            .attr("x", -30)
+            .attr("y", -yearScale(year) - yearScale.bandwidth() / 2)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .text(year);
+        });
+        //country
+        svg.append("g")
+          .selectAll(".countryLabel")
+          .data(countries)
+          .join("g")
+          .attr("class", "countryLabel")
+          .attr("transform", (d) => {
+            const angle = countryScale(d) + countryScale.bandwidth() / 2;
+            return `rotate(${(angle * 180) / Math.PI - 90}) translate(${radius + 10},0) ${
+              angle > Math.PI ? "rotate(180)" : ""
+            }`;
+          })
+          .append("text")
+          //aligning text to left if its position is greater than Math.PI.
+          .attr("text-anchor", (d) => (countryScale(d) + countryScale.bandwidth() / 2 > Math.PI ? "end" : "start"))
+          .attr("dy", "0.35em")
+          .text((d) => d)
+          .style("opacity", 0)
+          .transition()
+          .duration(200)
+          .delay((d, i) => Math.random() * data.length * 10)
+          .style("opacity", 1);
+    };
+
+    SixthSection("Sugar_World_Pro.csv");
+
+    document.querySelectorAll('input[name="dataset"]').forEach((input) => {
+      input.addEventListener("change", (event) => {
+        SixthSection(event.target.value);
+      });
+    });
+
+    //------------------------------------------------
+
+    const availableColumns = [
+        "Alpha Carotene", "Beta Carotene", "Beta Cryptoxanthin", "Carbohydrate",
+        "Cholesterol", "Choline", "Fiber", "Lutein and Zeaxanthin", "Lycopene",
+        "Niacin", "Protein", "Retinol", "Riboflavin", "Selenium", "Thiamin",
+        "Water", "Fat.Monosaturated Fat", "Fat.Polysaturated Fat", "Fat.Saturated Fat",
+        "Fat.Total Lipid", "Major Minerals.Calcium", "Major Minerals.Copper", "Major Minerals.Iron",
+        "Major Minerals.Magnesium", "Major Minerals.Phosphorus", "Major Minerals.Potassium",
+        "Major Minerals.Sodium", "Major Minerals.Zinc", "Vitamins.Vitamin A - RAE", "Vitamins.Vitamin B12",
+        "Vitamins.Vitamin B6", "Vitamins.Vitamin C", "Vitamins.Vitamin E", "Vitamins.Vitamin K",
+                    "Fat.Saturated Fat",
+                    "Protein",
+                    "Fiber",
+      ];
+
+
+        const EighthSection = async function () {
+            const data = await d3.csv("food.csv");
+            const variables = [
+            "Sugar Total",
+            "Fat.Saturated Fat",
+                    "Protein",
+                    "Fiber",
+        ];
+        
+        const categories = Array.from(new Set(data.map(d => d.Category)));
+        categories.unshift("all");
+        
+        //categ dropdown
+        const dropdown = d3.select("#select-section")
+                          .append("select")
+                          .attr("mutiple", true)
+                          .attr("id", "category-dropdown")
+                          .on("change", function () {
+                            updatePlot(this.value);
+                          });
+
+        dropdown.selectAll("option")
+              .data(categories)
+              .enter()
+              .append("option")
+              .attr("value", d => d)
+              .text(d => d);
+            
+        const dropdown1 = d3.select("#dropdown1");
+        const dropdown2 = d3.select("#dropdown2");
+        const dropdown3 = d3.select("#dropdown3");
+
+        availableColumns.forEach(column => {
+          dropdown1.append("option").text(column).property("value", column);
+          dropdown2.append("option").text(column).property("value", column);
+          dropdown3.append("option").text(column).property("value", column);
+        });
+
+        dropdown1.node().value = variables[1];
+        dropdown2.node().value = variables[2];
+        dropdown3.node().value = variables[3];
+        
+        function updateVariables() {
+          const variable1 = dropdown1.property("value");
+          const variable2 = dropdown2.property("value");
+          const variable3 = dropdown3.property("value");
+
+          return [
+            "Sugar Total",
+            variable1,
+            variable2,
+            variable3
+          ];
+        }
+/*             dropdown1.property("value", "Fat.Saturated Fat");
+        dropdown2.property("value", "Protein");
+        dropdown3.property("value", "Fiber"); */
+
+        const size = 190;
+        const padding = 30;
+
+        const x = variables.map(variable => d3.scaleLinear()
+                                              .domain(d3.extent(data, d => Number(d[variable])))
+                                              .rangeRound([padding / 2, size - padding / 2]));
+
+        const y = x.map(x => x.copy()
+                              .range([size - padding / 2, padding / 2]));
+
+        const z = d3.scaleOrdinal()
+            .domain(data.map(d => d.Category))
+            .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ]);
+
+        const xAxis = d3.axisBottom()
+            .ticks(6)
+            .tickSize(size * variables.length);
+
+        const yAxis = d3.axisLeft()
+            .ticks(6)
+            .tickSize(-size * variables.length);
+
+        const svg = d3.select("#eight-section")
+                      .append("svg")
+                      .attr("width", size * variables.length + padding)
+                      .attr("height", size * variables.length + padding)
+                      .attr("style", "background-color: transparent;")
+                      .append("g")
+                      .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+
+        svg.selectAll(".x.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "x-axis")
+            .attr("transform", (d, i) => "translate(" + i * size + ",0)")
+            .each(function (d, i) { 
+                  d3.select(this)
+                      .call(xAxis.scale(x[i]))
+                      .style("color", "lightgrey"); });
+
+        svg.selectAll(".y.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "y-axis")
+            .attr("transform", (d, i) => "translate(0," + i * size + ")")
+            .each(function (d, i) { 
+                d3.select(this)
+                    .call(yAxis.scale(y[i]))
+                    .style("color", "lightgrey"); });
+
+        svg.selectAll(".title")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "title")
+            .attr("transform", (d, i) => `translate(${i * size},${i * size})`)
+            .append("text")
+            .attr("x", padding / 2)
+            .attr("y", padding / 2)
+            .attr("dy", ".71em")
+            .attr("font-size", 14)
+            .text(d => d);
+
+        const cell = svg.selectAll(".cell")
+            .data(cross(variables, variables))
+            .enter().append("g")
+            .attr("class", "cell")
+            .attr("transform", d => "translate(" + d.i * size + "," + d.j * size + ")")
+            .each(plot);
+        // Tooltip
+        const tooltip = d3.select("#matrix-tooltip");
+
+        function showTooltip(d, variables) {
+          tooltip.style("display", "inline")
+            .html(`
+              <strong>Category:</strong> ${d["Category"]}<br>
+              <strong>Description:</strong> ${d["Description"]}<br>
+              <strong>${variables[0]}:</strong> ${d[variables[0]]}<br>
+              <strong>${variables[1]}:</strong> ${d[variables[1]]}<br>
+              <strong>${variables[2]}:</strong> ${d[variables[2]]}<br>
+              <strong>${variables[3]}:</strong> ${d[variables[3]]}
+            `);
+        }
+
+        function moveTooltip(event) {
+          tooltip.style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY + 10) + "px");
+        }
+
+        function hideTooltip() {
+          tooltip.style("display", "none");
+        }
+        
+        function plot(p, selectedCategory) {
+          //update variables here before draw the plot!!!
+          ////
+          const newvariables = updateVariables();
+
+          const cell = d3.select(this);
+
+          cell.append("rect")
+            .attr("class", "frame")
+            .attr("x", padding / 2)
+            .attr("y", padding / 2)
+            .attr("width", size - padding)
+            .attr("height", size - padding)
+            .attr("style", "fill: none; stroke: black;");
+
+          const filteredData = selectedCategory === "all" ? data : data.filter(d => d.Category === selectedCategory);
+          
+          //bug problem: should use newvariable but not variable here
+          const x = newvariables.map(variable => d3.scaleLinear()
+                                .domain(d3.extent(filteredData, d => Number(d[variable])))
+                                .rangeRound([padding / 2, size - padding / 2]));
+
+          const y = x.map(
+                      x => x.copy()
+                            .range([size - padding / 2, padding / 2])
+                          );
+
+          cell.each(function (p) {
+            const currentCell = d3.select(this);
+            
+            const circles = currentCell.selectAll("circle")
+              .data(filteredData)
+              .enter()
+              .append("circle")
+              .attr("class", 'scattorplot-circle')
+              .style("opacity", "0.7")
+              .attr("cx", d => x[p.i](d[newvariables[p.i]]))
+              .attr("cy", d => y[p.j](d[newvariables[p.j]]))
+              .attr("r", 3)
+              .attr("style", d => "fill: " + z(d.Category) + "; stroke: none;")
+              .on("mouseover", (event, d) => {
+              showTooltip(d, newvariables);
+              moveTooltip(event);
+              d3.select(event.currentTarget).style("cursor", "pointer")
+                .style("stroke", "black")
+                .style("stroke-width", "2px");
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.3);
+  
+              d3.select(event.currentTarget)
+                .style("opacity", 0.7)
+                .attr('r', 10);
+            })
+            .on("mousemove", (event) => {
+              moveTooltip(event);
+            })
+            .on("mouseout", (event) => { 
+              hideTooltip();
+              d3.select(event.currentTarget).style("cursor", "default")
+                .style("stroke", "none")
+                .attr("r", 3);
+
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.7);
+              
+            });
+          });
+        }
+
+        function cross(a, b) {
+            const c = [];
+            for (let i = 0; i < a.length; i++) {
+                for (let j = 0; j < b.length; j++) {
+                    c.push({ x: a[i], i: i, y: b[j], j: j });
+                }
+            }
+            return c;
+        }
+
+        const color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ])
+                        .domain(Array.from(new Set(data.map(d => d["Category"])))); 
+        
+        const uniqueCategories = new Set(data.map(d => d["Category"]));
+        const lengthCategory = uniqueCategories.size;
+
+        const legend_svg = d3.select("#eight-section-legend")
+            .append("svg")
+            .attr("width", 300)
+            .attr("height", 30 * lengthCategory)
+            .attr("style", "background-color: transparent;")
+            .append("g")
+            .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+        const legend = legend_svg.append("g")
+            .attr("class", "legend")
+            //.attr("transform", `translate(${size * (variables.length - 1)}, 0)`);
+
+        const legendData = color.domain().map((d, i) => ({category: d, color: color(d)}));
+
+        legend.selectAll("circle")
+            .data(legendData)
+            .enter().append("circle")
+            .attr("cx", 1)
+            .attr("cy", (d, i) => padding * (i + 1))
+            .attr("r", 5)
+            .style("fill", d => d.color);
+
+        legend.selectAll("text")
+            .data(legendData)
+            .enter()
+            .append("text")
+            .attr("x", 1 + 6)
+            .attr("y", (d, i) => padding * (i + 1))
+            .attr("dy", ".35em")
+            .text(d => d.category);
+
+        function updatePlot() {
+          const selectedCategory = dropdown.node().value;
+          svg.selectAll(".cell").each(function (p) {
+            d3.select(this)
+              .selectAll("circle")
+              .remove();
+            plot.call(this, p, selectedCategory);
+          });
+        }
+        updatePlot("all");
+      // ----------------------------------------
+        
+        dropdown1.on("change", function () {
+          updateChart();
+        });
+        dropdown2.on("change", function () {
+          updateChart();
+        });
+        dropdown3.on("change", function () {
+          updateChart();
+        });
+
+        function updateChart() {
+          // for the categroy!!!!! I got it !!!!!!! Finally!!!
+          //filter the data before do the dropdown123 update!!!
+          const selectedCategory = dropdown.node().value;
+          const filteredData = selectedCategory === "all" ? data : data.filter(d => d.Category === selectedCategory);
+          
+          const variables = updateVariables();
+          //console.log(variables)
+          const { x, y } = prepareData(filteredData, variables);
+
+          function prepareData(data, variables) {
+            const x = variables.map((variable) =>
+              d3.scaleLinear()
+                .domain(d3.extent(data, (d) => Number(d[variable])))
+                .rangeRound([padding / 2, size - padding / 2])
+            );
+
+            const y = x.map((x) => x.copy().range([size - padding / 2, padding / 2]));
+
+            return { x, y };
+          }
+
+          d3.selectAll("#eight-section circle").remove();
+          d3.selectAll("#eight-section .title").remove();
+          d3.selectAll("#eight-section .x-axis").remove();
+          d3.selectAll("#eight-section .y-axis").remove();
+        
+          const xAxis = d3.axisBottom()
+            .ticks(6)
+            .tickSize(size * variables.length);
+
+          const yAxis = d3.axisLeft()
+            .ticks(6)
+            .tickSize(-size * variables.length);
+
+          svg.selectAll(".x.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "x-axis")
+            .attr("transform", (d, i) => "translate(" + i * size + ",0)")
+            .each(function (d, i) { 
+                    d3.select(this)
+                      .call(xAxis.scale(x[i]))
+                      .style("color", "lightgrey"); })
+            .lower();
+
+          svg.selectAll(".y.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "y-axis")
+            .attr("transform", (d, i) => "translate(0," + i * size + ")")
+            .each(function (d, i) { 
+                    d3.select(this)
+                      .call(yAxis.scale(y[i]))
+                      .style("color", "lightgrey"); })
+            .lower();
+
+          const cell = d3.selectAll("#eight-section .cell");
+
+          cell.each(function (p) {
+            
+            const currentCell = d3.select(this);
+            
+            const circles = currentCell.selectAll("circle")
+              .data(filteredData)
+              .enter().append("circle")
+              .attr("class", 'scattorplot-circle')
+              .style("opacity", "0.7")
+              .attr("cx", d => x[p.i](d[variables[p.i]]))
+              .attr("cy", d => y[p.j](d[variables[p.j]]))
+              .attr("r", 3)
+              .attr("style", d => "fill: " + z(d.Category) + "; stroke: none;")
+              .on("mouseover", (event, d) => {
+              showTooltip(d, variables);
+              moveTooltip(event);
+              d3.select(event.currentTarget).style("cursor", "pointer")
+                .style("stroke", "black")
+                .style("stroke-width", "2px");
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.3);
+  
+              d3.select(event.currentTarget)
+                .style("opacity", 0.7)
+                .attr('r', 10);
+            })
+            .on("mousemove", (event) => {
+              moveTooltip(event);
+            })
+            .on("mouseout", (event) => { 
+              hideTooltip();
+              d3.select(event.currentTarget).style("cursor", "default")
+                .style("stroke", "none")
+                .attr("r", 3);
+
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.7);
+              
+            });
+          });
+
+          svg.selectAll(".title")
+          .data(variables)
+                        .enter().append("g")
+                        .attr("class", "title")
+                        .attr("transform", (d, i) => `translate(${i * size},${i * size})`)
+                        .append("text")
+                        .attr("x", padding / 2)
+                        .attr("y", padding / 2)
+                        .attr("dy", ".71em")
+                        .attr("font-size", 14)
+                        .text(d => d);
+            }      
+        };
+
+        EighthSection();
+
+
+
+    </script>
+</body>
+</html>
